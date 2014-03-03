@@ -2,6 +2,7 @@
 
 import ConfigParser
 import urllib2 
+import xml.etree.ElementTree as ET
 
 Config = ConfigParser.ConfigParser()
 Config.read("config.ini")
@@ -49,7 +50,9 @@ def main():
   print "OBA access key : %s" % (key)
   stop = 6950
   #print StopInfo(stop, key)
-  print CurrentArrivalsAndDepatruresForStop(stop, key)
+  arrivals =  CurrentArrivalsAndDepatruresForStop(stop, key)
+  root = ET.fromstring(arrivals)
+  print root.findall(".").nodeValue
 
 if __name__ == "__main__":
   main()
