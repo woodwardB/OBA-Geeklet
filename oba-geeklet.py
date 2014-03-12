@@ -2,10 +2,26 @@
 
 import ConfigParser
 import urllib2 
-import xml.etree.ElementTree as ET
+import json
 
 Config = ConfigParser.ConfigParser()
 Config.read("config.ini")
+
+class OBA(object):
+  def __init__(self, route, stop):
+    self.bus = bus
+    self.route = route
+
+  def route(self):
+    return self.route
+
+  def stop(self):
+    return self.stop
+
+  def __str__(self):
+    return "Gathering information on Route " + self.route + " at stop #" + self.stop
+
+  
 
 #Reads the key from the configuration file
 def ConfigSectionMap(section):
@@ -22,24 +38,24 @@ def ConfigSectionMap(section):
   return dict1
 
 # Sample REST call
-# http://api.pugetsound.onebusaway.org/api/where/arrival-and-departure-for-stop/1_75403.xml?key=TEST&tripId=1_15551341&serviceDate=1291536000000&vehicleId=1_3521&stopSequence=42
-# http://api.pugetsound.onebusaway.org/api/where/arrivals-and-departures-for-stop/1_75403.xml?key=TEST
+# http://api.pugetsound.onebusaway.org/api/where/arrival-and-departure-for-stop/1_75403.json?key=TEST&tripId=1_15551341&serviceDate=1291536000000&vehicleId=1_3521&stopSequence=42
+# http://api.pugetsound.onebusaway.org/api/where/arrivals-and-departures-for-stop/1_75403.json?key=TEST
 def CurrentArrivalsAndDepatruresForStop(stop, key):
   # route 304
   # stop 75190 W-bound 304
   # 6950 S-bound E-Line
   url = "http://api.pugetsound.onebusaway.org/api/where/arrivals-and-departures-for-stop/1_" 
-  urlreq = url + str(stop) + ".xml?key=" + key
+  urlreq = url + str(stop) + ".json?key=" + key
   print urlreq
   req = urllib2.Request(urlreq)
   response = urllib2.urlopen(req)
   return response.read()
 
-#Given a Stop and Key will return .xml formatted info about that stop
+#Given a Stop and Key will return .json formatted info about that stop
 def StopInfo(stop, key):
-  #http://api.pugetsound.onebusaway.org/api/where/stop/1_75403.xml?key=TEST
+  #http://api.pugetsound.onebusaway.org/api/where/stop/1_75403.json?key=TEST
   url = "http://api.pugetsound.onebusaway.org/api/where/stop/1_"
-  urlreq = url + str(stop) + ".xml?key=" + key
+  urlreq = url + str(stop) + ".json?key=" + key
   print urlreq
   req = urllib2.Request(urlreq)
   response = urllib2.urlopen(req)
@@ -51,8 +67,11 @@ def main():
   stop = 6950
   #print StopInfo(stop, key)
   arrivals =  CurrentArrivalsAndDepatruresForStop(stop, key)
-  root = ET.fromstring(arrivals)
-  print root.findall(".").nodeValue
+  print arrivals
+
+  js = json.load(arrivals)
+
+
 
 if __name__ == "__main__":
   main()
