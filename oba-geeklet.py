@@ -3,6 +3,7 @@
 import ConfigParser
 import urllib2 
 import json
+import time
 
 Config = ConfigParser.ConfigParser()
 Config.read("config.ini")
@@ -24,7 +25,7 @@ class OBA(object):
   
 
 #Reads the key from the configuration file
-def ConfigSectionMap(section):
+def config_section_map(section):
   dict1 = {}
   options = Config.options(section)
   for option in options:
@@ -52,7 +53,7 @@ def CurrentArrivalsAndDepatruresForStop(stop, key):
   return response.read()
 
 #Given a Stop and Key will return .json formatted info about that stop
-def StopInfo(stop, key):
+def stop_info(stop, key):
   #http://api.pugetsound.onebusaway.org/api/where/stop/1_75403.json?key=TEST
   url = "http://api.pugetsound.onebusaway.org/api/where/stop/1_"
   urlreq = url + str(stop) + ".json?key=" + key
@@ -62,14 +63,14 @@ def StopInfo(stop, key):
   return response.read() 
 
 def main():
-  key = ConfigSectionMap("OBA")['key']
+  key = config_section_map("OBA")['key']
   print "OBA access key : %s" % (key)
   stop = 6950
-  #print StopInfo(stop, key)
+  #print stop_info(stop, key)
   arrivals =  CurrentArrivalsAndDepatruresForStop(stop, key)
   print arrivals
 
-  js = json.load(arrivals)
+  #js = json.load(arrivals)
 
 
 
