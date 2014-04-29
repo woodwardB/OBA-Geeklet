@@ -4,7 +4,8 @@ __author__ = 'Brandon Woodward'
 
 import ConfigParser
 import urllib2
-
+import json
+import time
 
 Config = ConfigParser.ConfigParser()
 Config.read("config.ini")
@@ -45,8 +46,12 @@ def current_arrivals_departures(stop_num, key):
 
 def main():
     key = config_section_map("OBA")['key']
-    #print "OBA access key : %s" % (key)
-    print current_arrivals_departures(stop_num, key)
+    departures = current_arrivals_departures(stop_num, key)
+    decoded_data = json.loads(departures)
+    #print decoded_data
+    for buses in decoded_data['data']['entry']['arrivalsAndDepartures']:
+        assert isinstance(time.gmtime(buses['predictedDepartureTime']).tm_hour, object)
+        print buses['routeShortName'], time.gmtime(buses['predictedDepartureTime']).tm_hour, 'mins'
     pass
 
 

@@ -8,7 +8,7 @@ from pprint import pprint
 def infinite_defaultdict():
     return defaultdict(infinite_defaultdict)
 
-sample = open("data.json", "r")
+sample = open("data1.json", "r")
 
 data = sample.read()
 
@@ -24,12 +24,12 @@ decoded_data = json.loads(data)
 
 #sample.close()
 
-arrivals_and_departures = decoded_data['data']['arrivalsAndDepartures']
+arrivals_and_departures = decoded_data['data']['entry']['arrivalsAndDepartures']
 
 #print arrivals_and_departures['routeShortName'].keys()
 
 #print decoded_data['data']['arrivalsAndDepartures'][0]['routeShortName']
 
-for buses in decoded_data['data']['arrivalsAndDepartures']:
+for buses in decoded_data['data']['entry']['arrivalsAndDepartures']:
     assert isinstance(time.gmtime(buses['predictedDepartureTime']).tm_hour, object)
     print buses['routeShortName'], time.gmtime(buses['predictedDepartureTime']).tm_hour, 'mins'
